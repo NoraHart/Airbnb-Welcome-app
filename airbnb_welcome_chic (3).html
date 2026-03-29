@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Welcome Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --cream:#f7f3ee;--cream2:#ede8e0;--cream3:#e2dbd0;
+  --dark:#2a2420;--mid:#6b5e52;--light:#a89880;
+  --gold:#b8965a;--gold2:#d4b07a;
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --script:'Dancing Script',cursive;
+  --sans:'Jost',sans-serif;
+  --radius:14px;--nav:64px;
+}
+html,body{height:100%;overflow:hidden;background:var(--cream);color:var(--dark);font-family:var(--sans)}
+#app{max-width:430px;margin:0 auto;height:100dvh;display:flex;flex-direction:column;position:relative;overflow:hidden;background:var(--cream)}
+
+/* ── SCREENS ── */
+#screens{flex:1;overflow:hidden;position:relative}
+.screen{position:absolute;inset:0;overflow-y:auto;padding-bottom:calc(var(--nav)+16px);opacity:0;pointer-events:none;transform:translateY(14px);transition:opacity .3s ease,transform .3s ease;scrollbar-width:none;background:var(--cream)}
+.screen::-webkit-scrollbar{display:none}
+.screen.active{opacity:1;pointer-events:all;transform:translateY(0)}
+
+/* ── NAV ── */
+#nav{height:var(--nav);background:var(--cream);border-top:1px solid var(--cream3);display:flex;align-items:center;justify-content:space-around;padding:0 4px;flex-shrink:0;z-index:10}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 10px;border:none;background:none;color:var(--light);cursor:pointer;font-family:var(--sans);min-width:48px;transition:color .2s}
+.nav-btn svg{width:20px;height:20px;stroke-width:1.5;fill:none;stroke:currentColor}
+.nav-btn span{font-size:9px;font-weight:400;letter-spacing:.06em;text-transform:uppercase}
+.nav-btn.active{color:var(--gold)}
+
+/* ── EDIT HINT ── */
+.edit-hint{display:flex;align-items:center;gap:6px;padding:8px 20px;background:rgba(184,150,90,.08);border-bottom:1px solid var(--cream3);font-size:10px;color:var(--light);letter-spacing:.05em}
+.edit-hint svg{width:12px;height:12px;stroke:var(--gold);fill:none;stroke-width:2;flex-shrink:0}
+
+/* ── EDITABLE ELEMENTS ── */
+[contenteditable]{outline:none;cursor:text;border-radius:4px;transition:background .15s}
+[contenteditable]:hover{background:rgba(184,150,90,.08)}
+[contenteditable]:focus{background:rgba(184,150,90,.12);outline:2px solid rgba(184,150,90,.3)}
+[contenteditable]:empty::before{content:attr(data-ph);color:var(--light);font-style:italic}
+
+.tap-label{font-size:9px;letter-spacing:.08em;color:var(--gold);text-transform:uppercase;font-weight:500;opacity:0;transition:opacity .2s;margin-top:3px;text-align:center}
+.editable-wrap:hover .tap-label{opacity:1}
+.editable-wrap{display:flex;flex-direction:column;align-items:center}
+
+/* ── PHOTO UPLOAD ── */
+.photo-area{position:relative;cursor:pointer;overflow:hidden}
+.photo-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0}
+.photo-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:var(--cream2);color:var(--light);font-size:11px;font-family:var(--sans)}
+.photo-placeholder svg{width:28px;height:28px;stroke:var(--cream3);fill:none;stroke-width:1.5}
+.photo-preview{width:100%;height:100%;object-fit:cover;display:none}
+.photo-area:hover::after{content:'Change photo';position:absolute;inset:0;background:rgba(42,36,32,.45);display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-family:var(--sans);letter-spacing:.06em;text-transform:uppercase}
+
+/* ── HOME ── */
+.hero-section{position:relative;height:280px}
+.hero-photo-area{width:100%;height:100%}
+.hero-photo-area .photo-preview{width:100%;height:100%}
+.hero-overlay{position:absolute;bottom:0;left:0;right:0;padding:28px 24px 20px;background:linear-gradient(to top,var(--cream) 0%,rgba(247,243,238,.6) 60%,transparent 100%)}
+.property-eyebrow{font-size:9px;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;font-weight:500;margin-bottom:6px}
+.property-title{font-family:var(--script);font-size:40px;color:var(--dark);line-height:1;margin-bottom:4px}
+.property-loc{font-size:11px;color:var(--mid);display:flex;align-items:center;gap:4px;letter-spacing:.04em}
+.property-loc svg{width:10px;height:10px;stroke:var(--gold);fill:none;stroke-width:2}
+
+.welcome-card{margin:16px;background:white;border-radius:var(--radius);padding:20px 22px;border:1px solid var(--cream3)}
+.wc-script{font-family:var(--script);font-size:24px;color:var(--gold);margin-bottom:8px}
+.wc-body{font-size:13px;color:var(--mid);line-height:1.75;font-weight:300}
+
+.times-row{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--cream3);margin:0 16px;border-radius:var(--radius);overflow:hidden}
+.time-cell{background:var(--cream);padding:16px;display:flex;flex-direction:column;gap:4px}
+.tc-label{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--light);font-weight:500}
+.tc-time{font-family:var(--serif);font-size:28px;font-weight:300;color:var(--dark);font-style:italic}
+.tc-sub{font-size:10px;color:var(--mid)}
+
+.quick-nav{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:16px;margin-top:4px}
+.qn-item{background:white;border-radius:12px;padding:14px 10px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;border:1px solid var(--cream3);transition:border-color .2s,transform .15s}
+.qn-item:active{transform:scale(.96)}
+.qn-item:hover{border-color:var(--gold2)}
+.qn-icon{width:36px;height:36px;border-radius:50%;background:var(--cream2);display:flex;align-items:center;justify-content:center}
+.qn-icon svg{width:16px;height:16px;stroke:var(--gold);fill:none;stroke-width:1.5}
+.qn-label{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--mid);text-align:center;font-weight:500}
+
+.host-row{display:flex;align-items:center;gap:14px;margin:0 16px 4px;background:white;border-radius:var(--radius);padding:16px;border:1px solid var(--cream3)}
+.host-photo{width:52px;height:52px;border-radius:50%;overflow:hidden;flex-shrink:0;border:2px solid var(--cream3)}
+.host-photo .photo-placeholder{font-size:9px}
+.host-photo .photo-placeholder svg{width:20px;height:20px}
+.host-name{font-family:var(--serif);font-size:18px;font-style:italic;color:var(--dark)}
+.host-tag{font-size:10px;color:var(--light);letter-spacing:.06em;margin-top:2px}
+.host-stars{color:var(--gold);font-size:12px;margin-top:4px}
+
+/* ── ESSENTIALS ── */
+.screen-eyebrow{font-size:9px;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;font-weight:500;padding:32px 24px 4px}
+.screen-heading{font-family:var(--serif);font-size:34px;font-style:italic;font-weight:300;color:var(--dark);padding:0 24px 16px;line-height:1.1}
+
+.wifi-block{margin:0 16px 14px;background:var(--dark);border-radius:var(--radius);padding:24px;position:relative;overflow:hidden}
+.wifi-block::before{content:'';position:absolute;top:-30px;right:-30px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.04)}
+.wb-label{font-size:9px;letter-spacing:.14em;color:rgba(255,255,255,.5);text-transform:uppercase;margin-bottom:6px}
+.wb-network{font-family:var(--serif);font-size:22px;font-style:italic;color:white;margin-bottom:14px}
+.wb-pw-label{font-size:9px;letter-spacing:.1em;color:rgba(255,255,255,.4);text-transform:uppercase;margin-bottom:5px}
+.wb-pw{font-size:18px;color:var(--gold2);font-family:monospace;letter-spacing:.06em}
+.wb-copy{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.08);border:none;border-radius:20px;padding:6px 14px;color:rgba(255,255,255,.7);font-size:11px;font-family:var(--sans);cursor:pointer;margin-top:14px;transition:background .15s}
+.wb-copy:hover{background:rgba(255,255,255,.14)}
+.wb-copy svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2}
+
+.info-4{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 14px}
+.info-cell{background:white;border:1px solid var(--cream3);border-radius:12px;padding:14px}
+.ic-label{font-size:9px;letter-spacing:.1em;color:var(--light);text-transform:uppercase;font-weight:500;margin-bottom:5px}
+.ic-val{font-family:var(--serif);font-size:16px;font-style:italic;color:var(--dark)}
+
+.appliance-card{margin:0 16px 10px;background:white;border:1px solid var(--cream3);border-radius:12px;overflow:hidden}
+.ac-header{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer}
+.ac-emoji{width:34px;height:34px;border-radius:8px;background:var(--cream2);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.ac-name{font-size:13px;font-weight:500;color:var(--dark);flex:1}
+.ac-tap{font-size:10px;color:var(--light)}
+.ac-chev{width:14px;height:14px;stroke:var(--light);fill:none;stroke-width:2;transition:transform .2s}
+.ac-steps{display:none;padding:0 16px 14px;border-top:1px solid var(--cream3)}
+.ac-step{display:flex;gap:10px;padding:8px 0;align-items:flex-start}
+.ac-num{width:18px;height:18px;border-radius:50%;background:var(--gold);color:white;font-size:9px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.ac-text{font-size:12px;color:var(--mid);line-height:1.5}
+
+/* ── RULES ── */
+.rule-item{margin:0 16px 10px;background:white;border:1px solid var(--cream3);border-radius:12px;padding:16px 18px;display:flex;gap:12px;align-items:flex-start}
+.ri-num{font-family:var(--serif);font-size:22px;font-style:italic;color:var(--cream3);font-weight:300;flex-shrink:0;line-height:1;margin-top:2px}
+.ri-title{font-size:13px;font-weight:500;color:var(--dark);margin-bottom:3px}
+.ri-detail{font-size:12px;color:var(--mid);line-height:1.5;font-weight:300}
+.add-rule-btn,.add-place-btn{display:flex;align-items:center;gap:6px;margin:4px 16px 10px;padding:12px 16px;border:1px dashed var(--cream3);border-radius:12px;background:none;color:var(--light);font-size:12px;font-family:var(--sans);cursor:pointer;width:calc(100% - 32px);transition:border-color .2s,color .2s}
+.add-rule-btn:hover,.add-place-btn:hover{border-color:var(--gold);color:var(--gold)}
+
+/* ── LOCAL ── */
+.filter-bar{display:flex;gap:8px;padding:0 16px 14px;overflow-x:auto;scrollbar-width:none}
+.filter-bar::-webkit-scrollbar{display:none}
+.fpill{border:1px solid var(--cream3);background:white;border-radius:20px;padding:6px 14px;font-size:11px;color:var(--mid);white-space:nowrap;cursor:pointer;font-family:var(--sans);transition:all .15s;flex-shrink:0;letter-spacing:.04em}
+.fpill.active{border-color:var(--gold);color:var(--gold);background:rgba(184,150,90,.06)}
+
+/* ── PLACE CARD — image 2 style ── */
+.place-card-photo{
+  position:relative;margin:0 16px 10px;border-radius:12px;
+  overflow:hidden;height:88px;background:var(--dark);
+  display:flex;
+}
+/* Dark left panel — fixed width */
+.pc-left{
+  flex-shrink:0;width:58%;
+  background:rgba(22,18,14,.88);
+  padding:10px 12px;
+  display:flex;flex-direction:column;justify-content:space-between;
+  position:relative;z-index:2;
+}
+/* Soft right edge on dark panel */
+.pc-left::after{
+  content:'';position:absolute;top:0;right:-18px;bottom:0;width:18px;
+  background:linear-gradient(to right,rgba(22,18,14,.88),transparent);
+  pointer-events:none;
+}
+.pc-name{font-size:13px;font-weight:500;color:white;line-height:1.2;margin-bottom:2px}
+.pc-address{font-size:9.5px;color:rgba(255,255,255,.5);line-height:1.4}
+/* Action circles row — bottom of left panel */
+.pc-actions{display:flex;gap:6px;align-items:center;margin-top:6px}
+.pc-action-circle{
+  width:24px;height:24px;border-radius:50%;
+  background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);
+  display:flex;align-items:center;justify-content:center;
+  text-decoration:none;cursor:pointer;transition:background .15s;flex-shrink:0;
+}
+.pc-action-circle:hover{background:rgba(255,255,255,.28)}
+.pc-action-circle svg{width:11px;height:11px;stroke:white;fill:none;stroke-width:2}
+.pc-action-circle.dim{opacity:.3;cursor:default}
+
+/* Photo right side — fills remaining space, cropping controlled by object-position */
+.pc-right{
+  flex:1;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#2a2018,#3d2e1a);
+  display:flex;align-items:center;justify-content:center;
+  font-size:32px;color:rgba(255,255,255,.25);
+}
+.pc-right img{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;object-position:center;cursor:grab;
+  display:none;
+}
+.pc-right img.loaded{display:block}
+/* Tap to add photo — shown in right panel when no photo */
+.pc-add-photo-overlay{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:4px;
+  cursor:pointer;
+}
+.pc-add-photo-overlay svg{width:18px;height:18px;stroke:rgba(255,255,255,.3);fill:none;stroke-width:1.5}
+.pc-add-photo-overlay span{font-size:8px;color:rgba(255,255,255,.3);letter-spacing:.06em;text-transform:uppercase}
+/* Drag hint shown after photo added */
+.pc-drag-hint{
+  position:absolute;bottom:4px;left:0;right:0;text-align:center;
+  font-size:7.5px;color:rgba(255,255,255,.35);letter-spacing:.04em;
+  pointer-events:none;
+}
+
+/* Edit + delete controls — overlay on right panel */
+.pc-edit-btn{
+  position:absolute;bottom:8px;right:8px;z-index:3;
+  display:flex;align-items:center;gap:4px;
+  background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.2);
+  border-radius:16px;padding:4px 9px;
+  font-size:8.5px;color:rgba(255,255,255,.8);letter-spacing:.05em;
+  text-transform:uppercase;cursor:pointer;font-family:var(--sans);
+  transition:background .15s;
+}
+.pc-edit-btn:hover{background:rgba(0,0,0,.65)}
+.pc-edit-btn svg{width:9px;height:9px;stroke:rgba(255,255,255,.8);fill:none;stroke-width:2}
+.pc-del-btn{
+  position:absolute;top:7px;right:7px;z-index:3;
+  width:20px;height:20px;border-radius:50%;
+  background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.15);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:12px;color:rgba(255,255,255,.45);
+  transition:all .15s;
+}
+.pc-del-btn:hover{background:rgba(0,0,0,.7);color:white}
+/* Hidden file input scoped to right panel */
+.pc-file-input{position:absolute;inset:0;opacity:0;cursor:pointer;z-index:4;font-size:0}
+
+/* ── GENERATE LINK PANEL (on home screen) ── */
+#gen-panel{
+  margin:12px 16px 4px;
+  background:var(--dark);border-radius:var(--radius);padding:18px 20px;
+}
+.gen-title{font-family:var(--serif);font-size:17px;font-style:italic;color:var(--gold2);margin-bottom:4px}
+.gen-sub{font-size:11px;color:rgba(255,255,255,.5);line-height:1.6;margin-bottom:14px}
+.gen-btn{
+  width:100%;padding:12px;background:var(--gold);border:none;
+  border-radius:10px;font-size:13px;font-weight:500;
+  color:var(--dark);cursor:pointer;font-family:var(--sans);
+  transition:opacity .2s;letter-spacing:.02em;
+}
+.gen-btn:hover{opacity:.88}
+.gen-link-box{
+  margin-top:12px;background:rgba(255,255,255,.07);
+  border-radius:10px;padding:12px 14px;display:none;
+}
+.gen-link-url{
+  font-size:11px;color:rgba(255,255,255,.6);word-break:break-all;
+  font-family:monospace;margin-bottom:10px;line-height:1.5;
+}
+.gen-copy-btn{
+  background:var(--gold);border:none;border-radius:8px;
+  padding:8px 18px;font-size:12px;font-weight:500;
+  color:var(--dark);cursor:pointer;font-family:var(--sans);
+}
+.gen-note{font-size:10px;color:rgba(255,255,255,.35);margin-top:8px;line-height:1.5}
+
+/* ── CHECKOUT ── */
+.check-item{margin:0 16px 8px;background:white;border:1px solid var(--cream3);border-radius:12px;padding:14px 16px;display:flex;gap:12px;align-items:center;cursor:pointer;transition:opacity .2s}
+.check-item.done{opacity:.45}
+.check-item.done .ci-text{text-decoration:line-through;color:var(--light)}
+.ci-box{width:20px;height:20px;border-radius:5px;border:1.5px solid var(--cream3);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.check-item.done .ci-box{background:var(--gold);border-color:var(--gold)}
+.ci-check{width:10px;height:10px;stroke:white;fill:none;stroke-width:2.5;opacity:0;transition:opacity .2s}
+.check-item.done .ci-check{opacity:1}
+.ci-text{font-size:12px;color:var(--dark);line-height:1.4;font-weight:300}
+
+.progress-bar-wrap{padding:0 16px 14px;display:flex;align-items:center;gap:10px}
+.pb-track{flex:1;height:3px;background:var(--cream3);border-radius:2px;overflow:hidden}
+.pb-fill{height:100%;background:var(--gold);border-radius:2px;transition:width .4s ease}
+.pb-label{font-size:11px;color:var(--gold);font-weight:500;min-width:32px;text-align:right}
+
+.ec-card{margin:0 16px 8px;background:white;border:1px solid var(--cream3);border-radius:12px;padding:14px 16px;display:flex;gap:12px;align-items:center}
+.ec-dot{width:32px;height:32px;border-radius:50%;background:var(--cream2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ec-dot svg{width:14px;height:14px;stroke:var(--gold);fill:none;stroke-width:2}
+.ec-label{font-size:9px;letter-spacing:.1em;color:var(--light);text-transform:uppercase;margin-bottom:2px}
+.ec-name{font-size:13px;font-weight:500;color:var(--dark)}
+.ec-num{font-size:11px;color:var(--mid);margin-top:1px}
+
+.thankyou-block{margin:8px 16px 8px;background:var(--dark);border-radius:var(--radius);padding:24px;text-align:center}
+.ty-script{font-family:var(--script);font-size:30px;color:var(--gold2);margin-bottom:8px}
+.ty-sub{font-size:12px;color:rgba(255,255,255,.55);line-height:1.6;font-weight:300}
+.ty-stars{font-size:20px;color:var(--gold2);margin-top:12px;letter-spacing:4px}
+
+/* ── INLINE EDIT MODAL ── */
+#edit-modal{position:fixed;inset:0;z-index:500;display:flex;align-items:flex-end;pointer-events:none;opacity:0;transition:opacity .2s}
+#edit-modal.open{pointer-events:all;opacity:1}
+#edit-modal-bg{position:absolute;inset:0;background:rgba(42,36,32,.4)}
+#edit-modal-box{position:relative;z-index:1;background:var(--cream);border-radius:20px 20px 0 0;padding:24px;width:100%;max-width:430px;margin:0 auto;transform:translateY(100%);transition:transform .3s ease}
+#edit-modal.open #edit-modal-box{transform:translateY(0)}
+.em-title{font-family:var(--serif);font-size:22px;font-style:italic;color:var(--dark);margin-bottom:14px}
+.em-input{width:100%;background:var(--cream2);border:1px solid var(--cream3);border-radius:10px;padding:12px 14px;font-size:14px;color:var(--dark);font-family:var(--sans);outline:none;margin-bottom:10px;transition:border-color .2s}
+.em-input:focus{border-color:var(--gold)}
+.em-input::placeholder{color:var(--light)}
+.em-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.em-save{width:100%;padding:14px;background:var(--dark);border:none;border-radius:12px;font-family:var(--serif);font-size:18px;font-style:italic;color:var(--gold2);cursor:pointer;transition:opacity .2s}
+.em-save:hover{opacity:.85}
+.em-cancel{width:100%;padding:10px;background:none;border:none;font-size:12px;color:var(--light);cursor:pointer;font-family:var(--sans);margin-top:6px}
+
+/* ── ADD PLACE MODAL fields ── */
+.em-select{width:100%;background:var(--cream2);border:1px solid var(--cream3);border-radius:10px;padding:12px 14px;font-size:14px;color:var(--dark);font-family:var(--sans);outline:none;margin-bottom:10px;appearance:none}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:calc(var(--nav)+14px);left:50%;transform:translateX(-50%) translateY(16px);background:var(--dark);color:var(--cream);font-size:12px;padding:9px 18px;border-radius:20px;opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;z-index:400;white-space:nowrap;letter-spacing:.04em}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.screen.active>*{animation:fadeUp .3s ease both}
+.screen.active>*:nth-child(2){animation-delay:.04s}
+.screen.active>*:nth-child(3){animation-delay:.08s}
+.screen.active>*:nth-child(4){animation-delay:.12s}
+.screen.active>*:nth-child(5){animation-delay:.15s}
+.screen.active>*:nth-child(6){animation-delay:.18s}
+.screen.active>*:nth-child(7){animation-delay:.21s}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="screens">
+
+    <!-- ══ HOME ══ -->
+    <div class="screen active" id="home">
+      <div class="edit-hint"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Tap any text or photo to edit it</div>
+
+      <div class="hero-section">
+        <div class="photo-area hero-photo-area" onclick="triggerPhoto('hero-file')">
+          <input type="file" id="hero-file" accept="image/*" onchange="setPhoto(this,'hero-img')">
+          <div class="photo-placeholder"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Tap to add property photo</div>
+          <img id="hero-img" class="photo-preview" alt="">
+        </div>
+        <div class="hero-overlay">
+          <div class="property-eyebrow">Welcome to</div>
+          <div class="property-title" contenteditable="true" data-ph="Your Property Name" data-key="propName">The Birch House</div>
+          <div class="property-loc"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg><span contenteditable="true" data-ph="City, Country" data-key="location">Edinburgh, Scotland</span></div>
+        </div>
+      </div>
+
+      <div class="welcome-card">
+        <div class="wc-script" contenteditable="true" data-ph="A warm welcome" data-key="welcomeTitle">A warm welcome</div>
+        <div class="wc-body" contenteditable="true" data-ph="Write your welcome message..." data-key="welcomeMsg">We're so happy to have you here. This guide has everything you need for a wonderful stay — from WiFi details to our favourite local spots. Please don't hesitate to reach out if we can help with anything at all.</div>
+      </div>
+
+      <div class="times-row">
+        <div class="time-cell">
+          <div class="tc-label" contenteditable="true" data-ph="Check in" data-key="checkinLabel">Check in</div>
+          <div class="tc-time" contenteditable="true" data-ph="3:00" data-key="checkin">3:00</div>
+          <div class="tc-sub" contenteditable="true" data-ph="PM onwards" data-key="checkinSub">PM onwards</div>
+        </div>
+        <div class="time-cell">
+          <div class="tc-label" contenteditable="true" data-ph="Check out" data-key="checkoutLabel">Check out</div>
+          <div class="tc-time" contenteditable="true" data-ph="11:00" data-key="checkout">11:00</div>
+          <div class="tc-sub" contenteditable="true" data-ph="AM at the latest" data-key="checkoutSub">AM at the latest</div>
+        </div>
+      </div>
+
+      <div class="quick-nav">
+        <div class="qn-item" onclick="goTo('essentials')"><div class="qn-icon"><svg viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0 1 14.08 0M1.42 9a16 16 0 0 1 21.16 0M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/></svg></div><div class="qn-label">WiFi</div></div>
+        <div class="qn-item" onclick="goTo('rules')"><div class="qn-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 13h6M9 17h4"/></svg></div><div class="qn-label">Rules</div></div>
+        <div class="qn-item" onclick="goTo('local')"><div class="qn-icon"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg></div><div class="qn-label">Local</div></div>
+        <div class="qn-item" onclick="goTo('essentials')"><div class="qn-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div><div class="qn-label">House</div></div>
+        <div class="qn-item" onclick="goTo('checkout')"><div class="qn-icon"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></div><div class="qn-label">Depart</div></div>
+        <div class="qn-item" onclick="goTo('checkout')"><div class="qn-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12"/><path d="M1.65 3.2A2 2 0 0 1 3.64 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6"/></svg></div><div class="qn-label">Contact</div></div>
+      </div>
+
+      <div class="host-row">
+        <div class="photo-area host-photo" onclick="triggerPhoto('host-file')" style="cursor:pointer">
+          <input type="file" id="host-file" accept="image/*" onchange="setPhoto(this,'host-img')">
+          <div class="photo-placeholder"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <img id="host-img" class="photo-preview" style="border-radius:50%" alt="">
+        </div>
+        <div style="flex:1">
+          <div class="host-name" contenteditable="true" data-ph="Your Name" data-key="hostName">Nora Hart</div>
+          <div class="host-tag" contenteditable="true" data-ph="Your title" data-key="hostTitle">Your host · Always available</div>
+          <div class="host-stars">★★★★★ <span style="font-size:10px;color:var(--light);letter-spacing:.04em">Superhost</span></div>
+        </div>
+      </div>
+      <div id="gen-panel">
+        <div class="gen-title">Share with your guests</div>
+        <div class="gen-sub">Finished customising? Generate a read-only link to share with guests. They'll see your guide — nothing will be editable.</div>
+        <button class="gen-btn" onclick="generateLink()">✦ Generate guest link</button>
+        <div class="gen-link-box" id="gen-link-box">
+          <div class="gen-link-url" id="gen-link-url"></div>
+          <button class="gen-copy-btn" onclick="copyGenLink()">Copy link</button>
+          <div class="gen-note">Send via Airbnb message, WhatsApp, or email. Works on any phone — no app needed.</div>
+        </div>
+      </div>
+      <div style="height:8px"></div>
+    </div>
+    <div class="screen" id="essentials">
+      <div class="edit-hint"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Tap any field to edit it</div>
+      <div class="screen-eyebrow">Need it now</div>
+      <div class="screen-heading">Essentials</div>
+
+      <div class="wifi-block">
+        <div class="wb-label">WiFi Network</div>
+        <div class="wb-network" contenteditable="true" data-ph="Network name" data-key="wifiName">BirchHouse_WiFi</div>
+        <div class="wb-pw-label">Password</div>
+        <div class="wb-pw" contenteditable="true" data-ph="Password" data-key="wifiPass">Welcome2024!</div>
+        <button class="wb-copy" onclick="copyWifi()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button>
+      </div>
+
+      <div class="info-4">
+        <div class="info-cell"><div class="ic-label">Door code</div><div class="ic-val" contenteditable="true" data-ph="1234#" data-key="doorCode">1234#</div></div>
+        <div class="info-cell"><div class="ic-label">Parking</div><div class="ic-val" contenteditable="true" data-ph="Space 12" data-key="parking">Space 12</div></div>
+        <div class="info-cell"><div class="ic-label">Key location</div><div class="ic-val" contenteditable="true" data-ph="Lockbox" data-key="keyLoc">Front lockbox</div></div>
+        <div class="info-cell"><div class="ic-label">Bin day</div><div class="ic-val" contenteditable="true" data-ph="Tuesday" data-key="binDay">Tuesday</div></div>
+      </div>
+
+      <div style="padding:0 16px;margin-bottom:10px"><div style="font-size:9px;letter-spacing:.14em;color:var(--light);text-transform:uppercase;font-weight:500;margin-bottom:10px">Appliances</div></div>
+      <div id="appliances-list"></div>
+      <div style="height:8px"></div>
+    </div>
+
+    <!-- ══ RULES ══ -->
+    <div class="screen" id="rules">
+      <div class="edit-hint"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Tap any rule to edit • Tap + to add</div>
+      <div class="screen-eyebrow">Please read</div>
+      <div class="screen-heading">House Rules</div>
+      <div id="rules-list"></div>
+      <button class="add-rule-btn" onclick="openAddRule()">+ Add a rule</button>
+      <div style="height:8px"></div>
+    </div>
+
+    <!-- ══ LOCAL ══ -->
+    <div class="screen" id="local">
+      <div class="edit-hint"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Tap a place to edit • Add links to restaurants</div>
+      <div class="screen-eyebrow">From your host</div>
+      <div class="screen-heading">Local Guide</div>
+      <div class="filter-bar" id="filter-bar"></div>
+      <div id="places-list"></div>
+      <button class="add-place-btn" onclick="openAddPlace()">+ Add a place</button>
+      <div style="height:8px"></div>
+    </div>
+
+    <!-- ══ CHECKOUT ══ -->
+    <div class="screen" id="checkout">
+      <div class="screen-eyebrow">Departure</div>
+      <div class="screen-heading">Before You Go</div>
+      <div class="progress-bar-wrap"><div class="pb-track"><div class="pb-fill" id="pb-fill" style="width:0%"></div></div><div class="pb-label" id="pb-label">0 / 8</div></div>
+      <div id="checklist-items"></div>
+
+      <div style="padding:8px 0 4px"><div class="screen-eyebrow" style="padding-top:8px">Important numbers</div></div>
+      <div class="ec-card"><div class="ec-dot"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.65 3.2 2 2 0 0 1 3.64 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6 6l.92-.92a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 16z"/></svg></div><div><div class="ec-label">Your host</div><div class="ec-name" contenteditable="true" data-ph="Your Name" data-key="hostName2">Nora Hart</div><div class="ec-num" contenteditable="true" data-ph="+44 7700 900000" data-key="hostPhone">+44 7700 900000</div></div></div>
+      <div class="ec-card"><div class="ec-dot"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.65 3.2 2 2 0 0 1 3.64 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6 6l.92-.92a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 16z"/></svg></div><div><div class="ec-label">Emergency services</div><div class="ec-name">Police / Fire / Ambulance</div><div class="ec-num">999 · 112</div></div></div>
+      <div class="ec-card"><div class="ec-dot"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.65 3.2 2 2 0 0 1 3.64 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6 6l.92-.92a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 16z"/></svg></div><div><div class="ec-label">Nearest hospital</div><div class="ec-name" contenteditable="true" data-ph="Hospital name" data-key="hospital">Royal Infirmary</div><div class="ec-num" contenteditable="true" data-ph="Address & phone" data-key="hospitalNum">0131 536 1000</div></div></div>
+
+      <div class="thankyou-block">
+        <div class="ty-script">Thank you</div>
+        <div class="ty-sub">for being our guest. We hope your stay was wonderful — we'd love a review on Airbnb if you have a moment.</div>
+        <div class="ty-stars">★★★★★</div>
+      </div>
+      <div style="height:8px"></div>
+    </div>
+  </div>
+
+  <nav id="nav">
+    <button class="nav-btn active" onclick="goTo('home')" id="nav-home"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Home</span></button>
+    <button class="nav-btn" onclick="goTo('essentials')" id="nav-essentials"><svg viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0 1 14.08 0M1.42 9a16 16 0 0 1 21.16 0M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/></svg><span>Essentials</span></button>
+    <button class="nav-btn" onclick="goTo('rules')" id="nav-rules"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 13h6M9 17h4"/></svg><span>Rules</span></button>
+    <button class="nav-btn" onclick="goTo('local')" id="nav-local"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg><span>Local</span></button>
+    <button class="nav-btn" onclick="goTo('checkout')" id="nav-checkout"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg><span>Depart</span></button>
+  </nav>
+</div>
+
+<!-- ══ EDIT MODAL ══ -->
+<div id="edit-modal">
+  <div id="edit-modal-bg" onclick="closeModal()"></div>
+  <div id="edit-modal-box">
+    <div class="em-title" id="em-title">Edit</div>
+    <div id="em-fields"></div>
+    <button class="em-save" onclick="saveModal()">Save</button>
+    <button class="em-cancel" onclick="closeModal()">Cancel</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ── DATA ──
+let rules = [
+  {title:'No smoking indoors', detail:'Please smoke outside only. Ashtrays are provided by the back door.'},
+  {title:'No parties or events', detail:'This is a quiet residential property. Neighbours appreciated.'},
+  {title:'Quiet hours 10pm–8am', detail:'Please keep noise levels to a minimum after 10pm.'},
+  {title:'Pets by arrangement only', detail:'Please confirm with your host before bringing any pets.'},
+  {title:'No extra guests overnight', detail:'Only registered guests may stay overnight.'},
+]
+
+let places = [
+  {emoji:'☕', cat:'Coffee', name:'[Café Name]', desc:'Best flat white in the neighbourhood', dist:'5 min walk', link:''},
+  {emoji:'🍝', cat:'Dinner', name:'[Restaurant Name]', desc:'Incredible pasta — book ahead on weekends', dist:'10 min walk', link:''},
+  {emoji:'🥐', cat:'Coffee', name:'[Bakery Name]', desc:'Fresh pastries from 7am', dist:'8 min walk', link:''},
+  {emoji:'🌿', cat:'Activities', name:'[Park Name]', desc:'Beautiful morning walks, dog-friendly', dist:'3 min walk', link:''},
+  {emoji:'🛒', cat:'Groceries', name:'[Supermarket]', desc:'Open until 10pm', dist:'3 min walk', link:''},
+]
+
+const checklist = [
+  'Strip the beds and leave linen in the laundry basket',
+  'Run the dishwasher or wash remaining dishes',
+  'Empty all rubbish into the outdoor bins',
+  'Close and lock all windows and doors',
+  'Turn off lights, heating, and all appliances',
+  'Leave keys in the lockbox by the front door',
+  'Return any borrowed items to their place',
+  'Send us a message to say you\'re heading off',
+]
+
+const appliances = [
+  {icon:'☕', name:'Coffee Machine', steps:['Fill the water reservoir at the back','Insert a pod or ground coffee','Press the cup size button','Mugs are in the top left cupboard']},
+  {icon:'🍳', name:'Oven & Hob', steps:['Turn the dial to your temperature','Preheat for 10 minutes','Baking trays are in the bottom drawer','Fan mode = faster cooking']},
+  {icon:'🫧', name:'Washing Machine', steps:['Detergent is under the sink','Select your programme','Press start — door locks automatically','Quick wash cycle = 45 minutes']},
+  {icon:'📺', name:'Smart TV', steps:['Use the black remote to power on','Netflix & Disney+ are pre-installed','Log in with your own account','A guest profile is also available']},
+  {icon:'🌡️', name:'Thermostat', steps:['Dial is on the wall by the hallway','Set to your desired temperature','Please turn off when heading out','Do not set above 22°C']},
+]
+
+let activeFilter = 'All'
+let modalCallback = null
+
+// ── PHOTO ──
+function triggerPhoto(id){ document.getElementById(id).click() }
+function setPhoto(input, imgId){
+  const file = input.files[0]
+  if(!file) return
+  const reader = new FileReader()
+  reader.onload = e => {
+    const img = document.getElementById(imgId)
+    img.src = e.target.result
+    img.style.display = 'block'
+    img.previousElementSibling.style.display = 'none'
+    save()
+  }
+  reader.readAsDataURL(file)
+}
+
+// ── SAVE / LOAD ──
+function save(){
+  const data = {}
+  document.querySelectorAll('[data-key]').forEach(el => { data[el.dataset.key] = el.textContent.trim() })
+  const imgs = {}
+  ;['hero-img','host-img'].forEach(id => { const el=document.getElementById(id); if(el && el.style.display!=='none' && el.src) imgs[id]=el.src })
+  localStorage.setItem('wb3', JSON.stringify({data, imgs, rules, places}))
+}
+
+function load(){
+  const s = localStorage.getItem('wb3')
+  if(!s) return
+  const {data={}, imgs={}, rules:r, places:p} = JSON.parse(s)
+  Object.entries(data).forEach(([k,v]) => { document.querySelectorAll(`[data-key="${k}"]`).forEach(el => el.textContent=v) })
+  Object.entries(imgs).forEach(([id,src]) => {
+    const img = document.getElementById(id)
+    if(img){ img.src=src; img.style.display='block'; img.previousElementSibling.style.display='none' }
+  })
+  if(r) rules=r
+  if(p) places=p
+}
+
+// Auto-save on contenteditable changes
+document.addEventListener('input', e => { if(e.target.hasAttribute('data-key')) save() })
+
+// ── APPLIANCES ──
+const appList = document.getElementById('appliances-list')
+appliances.forEach(a => {
+  const card = document.createElement('div')
+  card.className = 'appliance-card'
+  card.innerHTML = `
+    <div class="ac-header" onclick="toggleApp(this)">
+      <div class="ac-emoji">${a.icon}</div>
+      <div class="ac-name">${a.name}</div>
+      <div class="ac-tap">how-to steps</div>
+      <svg class="ac-chev" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="ac-steps">
+      ${a.steps.map((s,i) => `<div class="ac-step"><div class="ac-num">${i+1}</div><div class="ac-text">${s}</div></div>`).join('')}
+    </div>
+  `
+  appList.appendChild(card)
+})
+function toggleApp(h){
+  const steps = h.nextElementSibling, open = steps.style.display==='block'
+  steps.style.display = open ? 'none' : 'block'
+  h.querySelector('.ac-chev').style.transform = open ? '' : 'rotate(180deg)'
+}
+
+// ── RULES ──
+function renderRules(){
+  const list = document.getElementById('rules-list')
+  list.innerHTML = ''
+  rules.forEach((r,i) => {
+    const el = document.createElement('div')
+    el.className = 'rule-item'
+    el.style.cursor = 'pointer'
+    el.innerHTML = `
+      <div class="ri-num">${String(i+1).padStart(2,'0')}</div>
+      <div style="flex:1">
+        <div class="ri-title">${r.title}</div>
+        <div class="ri-detail">${r.detail}</div>
+      </div>
+      <button onclick="event.stopPropagation();removeRule(${i})" style="background:none;border:none;color:var(--light);cursor:pointer;font-size:16px;padding:0 0 0 8px" title="Remove">×</button>
+    `
+    el.onclick = () => openEditRule(i)
+    list.appendChild(el)
+  })
+}
+
+function openEditRule(i){
+  openModal('Edit rule', [
+    {label:'Rule title', key:'title', val:rules[i].title, ph:'e.g. No smoking indoors'},
+    {label:'Description', key:'detail', val:rules[i].detail, ph:'e.g. Please smoke outside only.'},
+  ], vals => { rules[i].title=vals.title; rules[i].detail=vals.detail; save(); renderRules() })
+}
+
+function openAddRule(){
+  openModal('Add a rule', [
+    {label:'Rule title', key:'title', val:'', ph:'e.g. No parties or events'},
+    {label:'Description', key:'detail', val:'', ph:'e.g. Please keep gatherings small.'},
+  ], vals => { if(vals.title.trim()){ rules.push({title:vals.title, detail:vals.detail}); save(); renderRules() } })
+}
+
+function removeRule(i){ rules.splice(i,1); save(); renderRules() }
+
+// ── PLACES ──
+function renderPlaces(){
+  const cats = ['All', ...new Set(places.map(p=>p.cat))]
+  const fb = document.getElementById('filter-bar')
+  fb.innerHTML = ''
+  cats.forEach(cat => {
+    const pill = document.createElement('button')
+    pill.className = 'fpill' + (cat===activeFilter?' active':'')
+    pill.textContent = cat
+    pill.onclick = () => { activeFilter=cat; renderPlaces() }
+    fb.appendChild(pill)
+  })
+
+  const list = document.getElementById('places-list')
+  list.innerHTML = ''
+  const filtered = activeFilter==='All' ? places : places.filter(p=>p.cat===activeFilter)
+  filtered.forEach((p) => {
+    const i = places.indexOf(p)
+    const card = document.createElement('div')
+    card.className = 'place-card-photo'
+
+    // ── LEFT dark panel ──
+    const left = document.createElement('div')
+    left.className = 'pc-left'
+
+    const topInfo = document.createElement('div')
+    topInfo.innerHTML = `<div class="pc-name">${p.name}</div><div class="pc-address">${p.dist}${p.desc ? '<br>'+p.desc : ''}</div>`
+    left.appendChild(topInfo)
+
+    const actions = document.createElement('div')
+    actions.className = 'pc-actions'
+    // Phone circle
+    if(p.phone){
+      const ph = document.createElement('a')
+      ph.className = 'pc-action-circle'; ph.href = 'tel:'+p.phone
+      ph.innerHTML = `<svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.65 3.2 2 2 0 0 1 3.64 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6 6"/></svg>`
+      actions.appendChild(ph)
+    }
+    // Maps circle
+    const mapBtn = document.createElement(p.link ? 'a' : 'div')
+    mapBtn.className = 'pc-action-circle' + (p.link ? '' : ' dim')
+    if(p.link){ mapBtn.href = p.link; mapBtn.target = '_blank' }
+    mapBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>`
+    mapBtn.title = p.link ? 'Open in maps' : 'No link yet — tap edit to add one'
+    actions.appendChild(mapBtn)
+    left.appendChild(actions)
+    card.appendChild(left)
+
+    // ── RIGHT photo panel ──
+    const right = document.createElement('div')
+    right.className = 'pc-right'
+
+    if(p.photo){
+      const img = document.createElement('img')
+      img.className = 'loaded'
+      img.src = p.photo
+      img.style.objectPosition = p.photoPos || 'center'
+      img.alt = ''
+      right.appendChild(img)
+
+      // Drag-to-crop: drag the image within the frame
+      let isDragging = false, startY = 0, startPos = 0
+      img.addEventListener('mousedown', e => { e.preventDefault(); isDragging=true; startY=e.clientY; startPos=parseFloat(p.photoPos||'50') })
+      document.addEventListener('mousemove', e => {
+        if(!isDragging) return
+        const delta = (startY - e.clientY) * 0.5
+        const newPos = Math.max(0, Math.min(100, startPos + delta))
+        img.style.objectPosition = `center ${newPos}%`
+        places[i].photoPos = `center ${newPos}%`
+      })
+      document.addEventListener('mouseup', () => { if(isDragging){ isDragging=false; save() } })
+      // Touch drag
+      img.addEventListener('touchstart', e => { startY=e.touches[0].clientY; startPos=parseFloat((p.photoPos||'center 50%').split(' ').pop()) }, {passive:true})
+      img.addEventListener('touchmove', e => {
+        const delta = (startY - e.touches[0].clientY) * 0.5
+        const newPos = Math.max(0, Math.min(100, startPos + delta))
+        img.style.objectPosition = `center ${newPos}%`
+        places[i].photoPos = `center ${newPos}%`
+      }, {passive:true})
+      img.addEventListener('touchend', () => save())
+
+      const dragHint = document.createElement('div')
+      dragHint.className = 'pc-drag-hint'
+      dragHint.textContent = '↕ drag to reposition'
+      right.appendChild(dragHint)
+    } else {
+      right.textContent = p.emoji || '📍'
+      const addOverlay = document.createElement('div')
+      addOverlay.className = 'pc-add-photo-overlay'
+      addOverlay.innerHTML = `<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span>Add photo</span>`
+      right.appendChild(addOverlay)
+    }
+
+    // File input scoped to right panel
+    const fileInput = document.createElement('input')
+    fileInput.type = 'file'; fileInput.accept = 'image/*'
+    fileInput.className = 'pc-file-input'
+    fileInput.onchange = e => {
+      const file = e.target.files[0]; if(!file) return
+      const reader = new FileReader()
+      reader.onload = ev => { places[i].photo = ev.target.result; places[i].photoPos = 'center'; save(); renderPlaces() }
+      reader.readAsDataURL(file)
+    }
+    right.appendChild(fileInput)
+
+    // Edit pill — bottom right of right panel
+    const editBtn = document.createElement('div')
+    editBtn.className = 'pc-edit-btn'
+    editBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Edit`
+    editBtn.onclick = e => { e.stopPropagation(); openEditPlace(i) }
+    right.appendChild(editBtn)
+
+    // Delete — top right of right panel
+    const delBtn = document.createElement('div')
+    delBtn.className = 'pc-del-btn'
+    delBtn.textContent = '×'
+    delBtn.onclick = e => { e.stopPropagation(); removePlace(i) }
+    right.appendChild(delBtn)
+
+    card.appendChild(right)
+    list.appendChild(card)
+  })
+}
+
+function openEditPlace(i){
+  const p = places[i]
+  openModal('Edit place', [
+    {label:'Name', key:'name', val:p.name, ph:'e.g. Lemon Café'},
+    {label:'Address / distance', key:'dist', val:p.dist, ph:'e.g. 5 min walk · 123 High St'},
+    {label:'Description', key:'desc', val:p.desc||'', ph:'e.g. Best coffee in the area'},
+    {label:'Phone number', key:'phone', val:p.phone||'', ph:'e.g. +44 131 000 0000'},
+    {label:'Maps / website link', key:'link', val:p.link||'', ph:'https://maps.google.com/...'},
+    {label:'Category', key:'cat', val:p.cat, ph:'Coffee', options:['Coffee','Dinner','Drinks','Activities','Groceries','Sights']},
+    {label:'Emoji (shown if no photo)', key:'emoji', val:p.emoji, ph:'☕'},
+  ], vals => { Object.assign(places[i], vals); save(); renderPlaces() })
+}
+
+function openAddPlace(){
+  openModal('Add a place', [
+    {label:'Name', key:'name', val:'', ph:'e.g. Lemon Café'},
+    {label:'Address / distance', key:'dist', val:'', ph:'e.g. 5 min walk · 123 High St'},
+    {label:'Description', key:'desc', val:'', ph:'e.g. Best coffee in the area'},
+    {label:'Phone number', key:'phone', val:'', ph:'e.g. +44 131 000 0000'},
+    {label:'Maps / website link', key:'link', val:'', ph:'https://maps.google.com/...'},
+    {label:'Category', key:'cat', val:'Coffee', ph:'', options:['Coffee','Dinner','Drinks','Activities','Groceries','Sights']},
+    {label:'Emoji (shown if no photo)', key:'emoji', val:'📍', ph:'☕'},
+  ], vals => { if(vals.name.trim()){ places.push({...vals, photo:''}); save(); renderPlaces() } })
+}
+
+function removePlace(i){ places.splice(i,1); save(); renderPlaces() }
+
+// ── MODAL ──
+function openModal(title, fields, callback){
+  modalCallback = callback
+  document.getElementById('em-title').textContent = title
+  const c = document.getElementById('em-fields')
+  c.innerHTML = ''
+  fields.forEach(f => {
+    const wrap = document.createElement('div')
+    wrap.style.marginBottom = '10px'
+    const label = document.createElement('div')
+    label.style.cssText = 'font-size:11px;color:var(--light);margin-bottom:5px;letter-spacing:.04em'
+    label.textContent = f.label
+    wrap.appendChild(label)
+    if(f.options){
+      const sel = document.createElement('select')
+      sel.className = 'em-select'; sel.dataset.key = f.key
+      f.options.forEach(o => { const opt=document.createElement('option'); opt.value=o; opt.textContent=o; if(o===f.val) opt.selected=true; sel.appendChild(opt) })
+      wrap.appendChild(sel)
+    } else {
+      const inp = document.createElement('input')
+      inp.className = 'em-input'; inp.dataset.key = f.key
+      inp.value = f.val; inp.placeholder = f.ph
+      wrap.appendChild(inp)
+    }
+    c.appendChild(wrap)
+  })
+  const modal = document.getElementById('edit-modal')
+  modal.classList.add('open')
+  setTimeout(() => c.querySelector('input,select')?.focus(), 350)
+}
+
+function saveModal(){
+  const vals = {}
+  document.querySelectorAll('#em-fields [data-key]').forEach(el => { vals[el.dataset.key] = el.value.trim() })
+  if(modalCallback) modalCallback(vals)
+  closeModal()
+}
+
+function closeModal(){ document.getElementById('edit-modal').classList.remove('open') }
+
+// ── CHECKLIST ──
+const cl = document.getElementById('checklist-items')
+checklist.forEach((text,i) => {
+  const el = document.createElement('div')
+  el.className = 'check-item'
+  el.innerHTML = `<div class="ci-box"><svg class="ci-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="ci-text">${text}</div>`
+  el.onclick = () => { el.classList.toggle('done'); updateProgress() }
+  cl.appendChild(el)
+})
+
+function updateProgress(){
+  const done = document.querySelectorAll('.check-item.done').length
+  const pct = Math.round(done/checklist.length*100)
+  document.getElementById('pb-fill').style.width = pct+'%'
+  document.getElementById('pb-label').textContent = `${done} / ${checklist.length}`
+  if(done===checklist.length) toast('All done — have a wonderful journey! ✈️')
+}
+
+// ── NAV ──
+function goTo(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'))
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'))
+  document.getElementById(id).classList.add('active')
+  document.getElementById('nav-'+id).classList.add('active')
+  document.getElementById(id).scrollTop=0
+}
+
+// ── TOAST ──
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500) }
+function copyWifi(){ const pw=document.getElementById('wb-pw')?.textContent||document.querySelector('.wb-pw')?.textContent||''; navigator.clipboard?.writeText(pw).catch(()=>{}); toast('Password copied!') }
+
+// ── GENERATE GUEST LINK ──
+function generateLink(){
+  // Collect all current data
+  const data = {}
+  document.querySelectorAll('[data-key]').forEach(el => { data[el.dataset.key] = el.textContent.trim() })
+  const imgs = {}
+  ;['hero-img','host-img'].forEach(id => {
+    const el = document.getElementById(id)
+    if(el && el.style.display !== 'none' && el.src && el.src.startsWith('data:')) imgs[id] = el.src
+  })
+  // Strip photos from places to keep URL manageable — guests get the places data but photos
+  // are stored separately. We store everything in localStorage and give a short key.
+  const payload = {data, imgs, rules, places, locked:true, v:2}
+
+  // Generate a short random key
+  const key = 'g_' + Math.random().toString(36).slice(2,9)
+  try {
+    localStorage.setItem(key, JSON.stringify(payload))
+    // Build clean URL — no ?view= bloat, just a short key
+    const base = window.location.href.split('?')[0].split('#')[0]
+    const shareUrl = base + '?g=' + key
+    showGenLink(shareUrl)
+  } catch(e) {
+    toast('Storage full — try removing some photos first.')
+  }
+}
+
+function showGenLink(url){
+  const box = document.getElementById('gen-link-box')
+  document.getElementById('gen-link-url').textContent = url
+  box.style.display = 'block'
+  box.scrollIntoView({behavior:'smooth', block:'nearest'})
+}
+
+function copyGenLink(){
+  const url = document.getElementById('gen-link-url').textContent
+  navigator.clipboard?.writeText(url).catch(()=>{})
+  toast('Link copied — ready to share!')
+}
+
+// ── VIEW MODE (read-only for guests) ──
+function checkViewMode(){
+  const params = new URLSearchParams(window.location.search)
+  let payload = null
+
+  // Short localStorage key system
+  if(params.has('g')){
+    try {
+      const stored = localStorage.getItem(params.get('g'))
+      if(stored) payload = JSON.parse(stored)
+    } catch(e){}
+  }
+  // Legacy long URL support
+  if(!payload && params.has('view')){
+    try { payload = JSON.parse(decodeURIComponent(escape(atob(params.get('view'))))) } catch(e){}
+  }
+  if(!payload) return false
+
+  const {data={}, imgs={}, rules:r, places:p} = payload
+  Object.entries(data).forEach(([k,v]) => document.querySelectorAll(`[data-key="${k}"]`).forEach(el => el.textContent=v))
+  Object.entries(imgs).forEach(([id,src]) => {
+    const img = document.getElementById(id)
+    if(img && src){ img.src=src; img.style.display='block'; if(img.previousElementSibling) img.previousElementSibling.style.display='none' }
+  })
+  if(r) rules=r
+  if(p) places=p
+
+  // Lock — strip all editing from DOM after render
+  setTimeout(()=>{
+    document.querySelectorAll('[contenteditable]').forEach(el => {
+      el.removeAttribute('contenteditable')
+      el.style.cursor = 'default'
+    })
+    const editEls = [
+      ...document.querySelectorAll('.edit-hint'),
+      document.getElementById('edit-btn'),
+      document.getElementById('gen-panel'),
+      ...document.querySelectorAll('.add-rule-btn,.add-place-btn'),
+      ...document.querySelectorAll('.pc-edit-btn,.pc-del-btn,.pc-file-input,.pc-add-photo-overlay,.pc-drag-hint'),
+      ...document.querySelectorAll('.host-photo input, .hero-photo-area input'),
+    ]
+    editEls.forEach(el => { if(el) el.remove() })
+  }, 200)
+  return true
+}
+
+// ── INIT ──
+const isView = checkViewMode()
+if(!isView) load()
+renderRules()
+renderPlaces()
+</script>
+</body>
+</html>
